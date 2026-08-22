@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<meta name="theme-color" content="#07080c"/>
+<title>الباب</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --ink:#07080c; --navy:#0A1020; --gold:#C4A36A; --cream:#F4F0E6; --mute:#8a8478;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:var(--ink);color:var(--cream)}
+  body{
+    font-family:"IBM Plex Sans Arabic",sans-serif;
+    overflow-x:hidden;
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(196,163,106,.08), transparent 50%),
+      radial-gradient(700px 400px at -10% 110%, rgba(196,163,106,.05), transparent 45%),
+      var(--ink);
+  }
+  canvas#dust{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .wrap{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:12vh 28px 80px}
+  header{margin-bottom:64px}
+  .mark{
+    width:10px;height:10px;border-radius:50%;background:var(--gold);
+    box-shadow:0 0 22px rgba(196,163,106,.7);margin-bottom:28px;
+  }
+  h1{
+    font-family:"Noto Naskh Arabic",serif;
+    font-weight:600;font-size:clamp(42px,8vw,72px);line-height:1.15;
+    margin:0 0 12px;letter-spacing:-.02em;
+  }
+  .whisper{color:var(--mute);font-weight:300;font-size:17px;max-width:26em;line-height:1.9}
+  .clock{margin-top:22px;font-size:13px;color:var(--gold);letter-spacing:.08em}
+  .pulse{
+    margin:56px 0 72px;padding:28px 28px 24px;
+    border:1px solid rgba(196,163,106,.22);
+    background:rgba(10,16,32,.45);
+  }
+  .pulse .k{font-size:12px;color:var(--gold);margin-bottom:10px;letter-spacing:.14em}
+  .pulse .v{
+    font-family:"Noto Naskh Arabic",serif;font-size:clamp(22px,4vw,32px);margin:0 0 8px
+  }
+  .nums{display:flex;flex-wrap:wrap;gap:18px 28px;margin-top:18px;font-variant-numeric:tabular-nums}
+  .nums b{display:block;font-weight:500;font-size:18px}
+  .nums span{color:var(--mute);font-size:12px}
+  .up{color:#c9d4b8}
+  .rooms{display:grid;gap:14px}
+  @media(min-width:720px){.rooms{grid-template-columns:1fr 1fr 1fr}}
+  a.room{
+    display:block;text-decoration:none;color:inherit;
+    padding:28px 24px 24px;min-height:210px;
+    border:1px solid rgba(244,240,230,.1);
+    background:rgba(7,8,12,.55);
+    transition:border-color .25s, transform .25s, background .25s;
+  }
+  a.room:hover{border-color:var(--gold);transform:translateY(-3px);background:rgba(10,16,32,.7)}
+  a.room .n{
+    font-family:"Noto Naskh Arabic",serif;font-size:32px;margin:0 0 8px
+  }
+  a.room p{margin:0;color:var(--mute);font-weight:300;line-height:1.8;font-size:14px}
+  a.room .go{margin-top:22px;color:var(--gold);font-size:12px;letter-spacing:.12em}
+  footer{margin-top:80px;color:var(--mute);font-size:12px;font-weight:300}
+  .lock{
+    position:fixed;inset:0;z-index:5;background:var(--ink);
+    display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;
+    transition:opacity .8s ease;
+  }
+  .lock.hide{opacity:0;pointer-events:none}
+  .lock input{
+    background:transparent;border:none;border-bottom:1px solid rgba(196,163,106,.4);
+    color:var(--cream);font-family:"Noto Naskh Arabic",serif;font-size:22px;
+    text-align:center;padding:8px 4px;width:min(280px,70vw);outline:none;
+  }
+  .lock .hint{color:var(--mute);font-size:13px;font-weight:300}
+  .err{color:#c47a6a;font-size:12px;min-height:1em}
+</style>
+</head>
+<body>
+<canvas id="dust"></canvas>
+<div class="lock" id="lock">
+  <div class="mark"></div>
+  <input id="key" autocomplete="off" spellcheck="false" placeholder="…"/>
+  <div class="hint">كلمة البيت</div>
+  <div class="err" id="err"></div>
+</div>
+<div class="wrap" id="house" hidden>
+  <header>
+    <div class="mark"></div>
+    <h1>ادخل على مهل.</h1>
+    <p class="whisper">ثلاثة أبواب، بيت واحد. لا رابع. هذا الرابط لك، ليس للسوق.</p>
+    <div class="clock" id="clock"></div>
+  </header>
+  <section class="pulse">
+    <div class="k">آخر إغلاق · الجمعة 21 أغسطس</div>
+    <p class="v">الذهب فوق أربعة آلاف وستمائة، والعائد ما نزل.</p>
+    <div class="nums">
+      <div><b class="up">4,680 +2.37%</b><span>ذهب</span></div>
+      <div><b class="up">53,277 +0.98%</b><span>داو</span></div>
+      <div><b class="up">7,674 +0.43%</b><span>إس آند بي</span></div>
+      <div><b class="up">26,180 +0.43%</b><span>ناسداك</span></div>
+    </div>
+  </section>
+  <div class="rooms">
+    <a class="room" href="https://alhajda.com/">
+      <p class="n">الهجدة</p>
+      <p>منطق السوق بهدوء. المنصة والقناة في مكانهما.</p>
+      <div class="go">ادخل ←</div>
+    </a>
+    <a class="room" href="https://tahajjud.alhajda.com/">
+      <p class="n">تهجد</p>
+      <p>الصلاة في وقتها. بلا ضجيج حوله.</p>
+      <div class="go">ادخل ←</div>
+    </a>
+    <a class="room" href="https://luma.alhajda.com/">
+      <p class="n">لمعة</p>
+      <p>عوالم أصلية. لا نسخة من السوق.</p>
+      <div class="go">ادخل ←</div>
+    </a>
+  </div>
+  <footer>هدوء السوق · الهجده</footer>
+</div>
+<script>
+(function(){
+  const KEY = "احب الهدوء";
+  const lock = document.getElementById("lock");
+  const house = document.getElementById("house");
+  const input = document.getElementById("key");
+  const err = document.getElementById("err");
+  function open(){
+    lock.classList.add("hide");
+    house.hidden = false;
+    setTimeout(()=>lock.remove(), 900);
+  }
+  if (sessionStorage.getItem("bab") === "1") open();
+  else setTimeout(()=>input.focus(), 200);
+  input.addEventListener("keydown", (e)=>{
+    if (e.key !== "Enter") return;
+    const v = (input.value||"").trim().replace(/أ/g,"ا").replace(/إ/g,"ا").replace(/آ/g,"ا");
+    const k = KEY.replace(/أ/g,"ا").replace(/إ/g,"ا").replace(/آ/g,"ا");
+    if (v === k){ sessionStorage.setItem("bab","1"); open(); }
+    else { err.textContent = "ليست هذه."; input.select(); }
+  });
+  const clock = document.getElementById("clock");
+  function tick(){
+    const f = new Intl.DateTimeFormat("ar-SA", {timeZone:"Asia/Riyadh", weekday:"long", hour:"2-digit", minute:"2-digit", hour12:false});
+    clock.textContent = "الرياض · " + f.format(new Date());
+  }
+  tick(); setInterval(tick, 30000);
+  const c = document.getElementById("dust");
+  const x = c.getContext("2d");
+  let w,h,pts;
+  function resize(){ w=c.width=innerWidth; h=c.height=innerHeight;
+    pts=Array.from({length:70},()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.2+.2,v:Math.random()*.25+.05}));
+  }
+  function draw(){
+    x.clearRect(0,0,w,h);
+    x.fillStyle="rgba(196,163,106,.55)";
+    pts.forEach(p=>{ p.y-=p.v; if(p.y<0){p.y=h;p.x=Math.random()*w} x.beginPath(); x.arc(p.x,p.y,p.r,0,7); x.fill(); });
+    requestAnimationFrame(draw);
+  }
+  resize(); draw(); addEventListener("resize", resize);
+})();
+</script>
+</body>
+</html>

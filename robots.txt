@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /sakin
+Disallow: /sakin/
+
+Sitemap: https://luma.alhajda.com/sitemap.xml
